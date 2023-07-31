@@ -1,20 +1,25 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.1;
+//SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.0;
 
-contract ErrorHandlingProject{
-    uint public enterNum;
+contract ETH_Module1 {
+    address public owner;
+    uint256 public balance;
 
-    function perenterNum(uint _enterNum) public{
-        require(_enterNum>0,"Entered value should bhe greater then 0");
-        assert(_enterNum !=enterNum);
-        enterNum=_enterNum;
+    constructor() {
+        owner = msg.sender;
+        balance = 0;
     }
-
-    function perMath(uint _nume,uint _deno) public pure returns(uint) {
-        require(_deno !=0,"Not Divisible by zero");
-
-        if(_nume%_deno !=0){
-            revert("Numerator should be devided by denominator");
+    function deposit(uint256 amount) external {
+        require(msg.sender == owner, "Only the contract owner can deposit");
+        require(amount > 0, "Amount must be greater than zero");
+        balance += amount;
+    }
+    function withdraw(uint256 amount) external {
+        if (amount > balance) {
+            revert("Insufficient balance to withdraw");
         }
-        return _nume/_deno;
-    }}
+        balance -= amount;
+        assert(balance >= 0);
+    }
+}
+
